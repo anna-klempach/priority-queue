@@ -41,47 +41,61 @@ class Node {
 
     swapWithParent() {
         if (this.parent) {
-            let swapNode = new Node();
-            let grandParent = new Node();
-            grandParent = this.parent.parent;
+            let swapNodeGrandparent = new Node();
+            let swapNodeParent = new Node();
+            swapNodeGrandparent = this.parent.parent;
+            swapNodeParent = this.parent;
+            this.parent.parent = this;
+            this.parent = swapNodeGrandparent;
 
-            let parent = new Node();
-            parent = this.parent;
+            let swapNodeLeft = new Node();
+            let swapNodeRight = new Node();
 
-            let child = new Node();
-            child = this;
 
-            if (parent == grandParent.left) {
-                grandParent.left = child;
-
-            } else {
-                grandParent.right = child;
+            if (this.left) {
+                swapNodeLeft = this.left;
+                swapNodeLeft.parent = swapNodeParent;
+            }
+            
+            if (this.right) {
+                swapNodeRight = this.right;
+                swapNodeRight.parent = swapNodeParent;
             }
 
-            child.parent = grandParent;
-            parent.parent = child;
-
-            if (child == parent.left) {
-                child.left = parent;
-                child.right = parent.right;
-
-            } else {
-                child.left = parent.left;
-                child.right = parent;
+            if (this == swapNodeParent.left) {
+                this.left = swapNodeParent;
+                this.right = swapNodeParent.right;
             }
-            child.left.parent = this.parent;
-            child.right.parent = this.parent;
-            parent.left = child.left;
-            parent.right = child.right;
 
-            this.parent.parent.left = grandParent.left;
-            this.parent.parent.right = grandParent.right;
-            this.parent.left = parent.left;
-            this.parent.right = parent.right;
-            this.parent.parent = parent.parent;
-            this.left = child.left;
-            this.right = child.right;
-            this.parent = child.parent;
+            if (this == swapNodeParent.right) {
+                this.left = swapNodeParent.left;
+                this.right = swapNodeParent;
+            }
+
+            if (this.left) {
+                this.left.parent = this;
+            }
+            if (this.right) {
+                this.right.parent = this; 
+            }
+
+            if (swapNodeLeft.parent) {
+                swapNodeParent.left = swapNodeLeft;
+            }
+
+            if (swapNodeRight.parent) {
+                swapNodeParent.right = swapNodeRight;
+            }
+
+           if (this.parent) {
+               if (this.parent.left == swapNodeParent) {
+                this.parent.left = this;
+               }
+
+               if (this.parent.right == swapNodeParent) {
+                this.parent.right = this;
+               }
+           }
         }
     }
 }
