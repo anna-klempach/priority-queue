@@ -55,21 +55,36 @@ class Node {
             if (this.left) {
                 swapNodeLeft = this.left;
                 swapNodeLeft.parent = swapNodeParent;
+            } else {
+                swapNodeLeft = null;
             }
             
             if (this.right) {
                 swapNodeRight = this.right;
                 swapNodeRight.parent = swapNodeParent;
+            } else {
+                swapNodeRight = null;
             }
 
             if (this == swapNodeParent.left) {
                 this.left = swapNodeParent;
-                this.right = swapNodeParent.right;
+                if (swapNodeParent.right) {
+                    this.right = swapNodeParent.right;
+                } else {
+                    this.right = null;
+                }
+                
             }
 
             if (this == swapNodeParent.right) {
-                this.left = swapNodeParent.left;
+                
                 this.right = swapNodeParent;
+                if (swapNodeParent.left) {
+                    this.left = swapNodeParent.left;
+                } else {
+                    this.left = null;
+                }
+                
             }
 
             if (this.left) {
@@ -79,13 +94,10 @@ class Node {
                 this.right.parent = this; 
             }
 
-            if (swapNodeLeft.parent) {
                 swapNodeParent.left = swapNodeLeft;
-            }
 
-            if (swapNodeRight.parent) {
                 swapNodeParent.right = swapNodeRight;
-            }
+            
 
            if (this.parent) {
                if (this.parent.left == swapNodeParent) {
