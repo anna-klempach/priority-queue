@@ -17,9 +17,12 @@ class MaxHeap {
 
 	pop() {
 		if (this.root) {
-			this.removeChild(node);
-			this.nodesArray.splice(this.nodesArray.indexOf(node),1);
+			let rootNode = this.detachRoot();
+
+			return rootNode.data;
 		}
+
+		
 		
 	}
 
@@ -35,6 +38,43 @@ class MaxHeap {
 
 	restoreRootFromLastInsertedNode(detached) {
 		
+		let restoreNode = new Node();
+		restoreNode = this.parentNodes.pop();
+		this.root = restoreNode;
+
+		if (restoreNode.parent !== detached && restoreNode.parent) {
+			if(restoreNode === restoreNode.parent.left) {
+				restoreNode.parent.left = null;
+			} 
+			if (restoreNode === restoreNode.parent.right){
+				restoreNode.parent.right = null;
+				this.parentNodes.unshift(restoreNode.parent);
+			}	
+		}
+		restoreNode.parent = null;
+		
+		if(detached.left !== restoreNode) {
+			restoreNode.left = detached.left;
+			if(restoreNode.left) {
+				restoreNode.left.parent = restoreNode;
+			}
+			
+		} else {
+			restoreNode.left = null;
+			this.parentNodes.push(restoreNode);
+		}
+		
+		if (detached.right && detached.right !==restoreNode){
+			restoreNode.right = detached.right;
+			if (restoreNode.right) {
+				restoreNode.right.parent = restoreNode;
+			}
+			
+		} else if (detached.right === restoreNode){
+			restoreNode.right = null;
+			this.parentNodes.unshift(restoreNode);
+		}
+	
 	}
 
 	size() {
@@ -56,7 +96,7 @@ class MaxHeap {
 
 	insertNode(node) {
 		
-		if (this.root == null && this.parentNodes.length == 0) {
+		if (this.root == null) {
 			this.root = node;
 			this.parentNodes.push(node);
 			this.nodesArray.push(node);
@@ -65,11 +105,10 @@ class MaxHeap {
 			this.parentNodes[0].appendChild(node);
 			this.parentNodes.push(node);
 			this.nodesArray.push(node);
-	
-			if (this.parentNodes[0].left && this.parentNodes[0].right) {
-				this.parentNodes.shift();
-			}
 			
+		}
+		if (this.parentNodes[0].left && this.parentNodes[0].right) {
+			this.parentNodes.shift();
 		}
 
 	}
@@ -126,11 +165,8 @@ class MaxHeap {
 				maxNode = node.right;
 				maxPriority = node.right.priority;
 			}
-
 			
-			if (maxNode !== node) {
-		
-				
+			if (maxNode !== node) {	
 				swapArray.push(maxNode);
 				node = maxNode;
 				maxPriority = initialPriority;
