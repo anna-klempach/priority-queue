@@ -17,11 +17,13 @@ class MaxHeap {
 	}
 
 	pop() {
-		if (this.root) {
+		if (this.root !== null) {
 			let rootNode = this.detachRoot();
-			this.restoreRootFromLastInsertedNode(rootNode);
-			let newRootNode = this.root;
-			this.shiftNodeDown(newRootNode);
+			if (this.parentNodes.length > 0) {
+				this.restoreRootFromLastInsertedNode(rootNode);
+				let newRootNode = this.root;
+				this.shiftNodeDown(newRootNode);
+			}
 			this.queueLength--;
 			return rootNode.data;
 			
