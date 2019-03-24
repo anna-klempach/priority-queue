@@ -146,15 +146,13 @@ class MaxHeap {
 	}
 
 	shiftNodeDown(node) {
-		
-		let swapArray = [];
-		let maxNode = new Node();
-		let initialPriority = node.priority;
-		let maxPriority = initialPriority;
+		if (!node.left) {
+			return;
+		}
+		let maxNode = node;
+		let maxPriority = node.priority;
 		let indexNode;
-		let indexParent;
-		while (true) {
-			maxNode = node;
+		let indexMax;
 			if (node.left && node.left.priority > maxPriority) {
 				maxNode = node.left;
 				maxPriority = node.left.priority;
@@ -166,32 +164,26 @@ class MaxHeap {
 			}
 			
 			if (maxNode !== node) {	
-				swapArray.push(maxNode);
-				node = maxNode;
-				maxPriority = initialPriority;
-			} else break;
-		}
-
-		let swapArrayLength = swapArray.length;
-		
-			for (let i = 0; i < swapArrayLength; i++) {
-				
-				node = swapArray[i];
-				if (this.root === node.parent) {
-					this.root = node;
+				if (this.root === node) {
+					this.root = maxNode;
 				}
 				indexNode = this.parentNodes.indexOf(node);
-				indexParent = this.parentNodes.indexOf(node.parent);
-				if (indexNode >-1 && indexParent > -1) {
-					this.parentNodes[indexNode] = node.parent;
-					this.parentNodes[indexParent] = node;
+				indexMax = this.parentNodes.indexOf(maxNode);
+				if (indexNode >-1 && indexMax > -1) {
+					this.parentNodes[indexNode] = maxNode;
+					this.parentNodes[indexMax] = node;
 				}
 	
-				if (indexNode >-1 && indexParent == -1) {
-					this.parentNodes[indexNode] = node.parent;
+				if (indexMax >-1 && indexNode == -1) {
+					this.parentNodes[indexMax] = node;
 				}
-				node.swapWithParent();
-		}
+				maxNode.swapWithParent();
+				
+					this.shiftNodeDown(node);
+				
+			} else {
+				return;
+			}
 	}
 }		
 
