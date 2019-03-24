@@ -5,23 +5,28 @@ class MaxHeap {
 		this.root = null;
 		let parentNodes = [];
 		this.parentNodes = parentNodes;
-		let nodesArray = [];
-		this.nodesArray = nodesArray;
+		this.queueLength = 0;
+		
 	}
 
 	push(data, priority) {
 	let node = new Node(data, priority);
 	this.insertNode(node);
 	this.shiftNodeUp(node);
+	this.queueLength++;
 	}
 
 	pop() {
 		if (this.root) {
 			let rootNode = this.detachRoot();
-
+			this.restoreRootFromLastInsertedNode(rootNode);
+			let newRootNode = this.root;
+			this.shiftNodeDown(newRootNode);
+			this.queueLength--;
 			return rootNode.data;
+			
 		}
-
+		
 		
 		
 	}
@@ -38,48 +43,50 @@ class MaxHeap {
 
 	restoreRootFromLastInsertedNode(detached) {
 		
-		let restoreNode = new Node();
-		restoreNode = this.parentNodes.pop();
-		this.root = restoreNode;
-
-		if (restoreNode.parent !== detached && restoreNode.parent) {
-			if(restoreNode === restoreNode.parent.left) {
-				restoreNode.parent.left = null;
-			} 
-			if (restoreNode === restoreNode.parent.right){
-				restoreNode.parent.right = null;
-				this.parentNodes.unshift(restoreNode.parent);
-			}	
-		}
-		restoreNode.parent = null;
-		
-		if(detached.left !== restoreNode) {
-			restoreNode.left = detached.left;
-			if(restoreNode.left) {
-				restoreNode.left.parent = restoreNode;
+		if (this.parentNodes.length > 0) {
+			let restoreNode = new Node();
+			restoreNode = this.parentNodes.pop();
+			this.root = restoreNode;
+	
+			if (restoreNode.parent !== detached && restoreNode.parent) {
+				if(restoreNode === restoreNode.parent.left) {
+					restoreNode.parent.left = null;
+				} 
+				if (restoreNode === restoreNode.parent.right){
+					restoreNode.parent.right = null;
+					this.parentNodes.unshift(restoreNode.parent);
+				}	
+			}
+			restoreNode.parent = null;
+			
+			if(detached.left !== restoreNode) {
+				restoreNode.left = detached.left;
+				if(restoreNode.left) {
+					restoreNode.left.parent = restoreNode;
+				}
+				
+			} else {
+				restoreNode.left = null;
+				this.parentNodes.push(restoreNode);
 			}
 			
-		} else {
-			restoreNode.left = null;
-			this.parentNodes.push(restoreNode);
+			if (detached.right && detached.right !==restoreNode){
+				restoreNode.right = detached.right;
+				if (restoreNode.right) {
+					restoreNode.right.parent = restoreNode;
+				}
+				
+			} else if (detached.right === restoreNode){
+				restoreNode.right = null;
+				this.parentNodes.unshift(restoreNode);
+			}
 		}
 		
-		if (detached.right && detached.right !==restoreNode){
-			restoreNode.right = detached.right;
-			if (restoreNode.right) {
-				restoreNode.right.parent = restoreNode;
-			}
-			
-		} else if (detached.right === restoreNode){
-			restoreNode.right = null;
-			this.parentNodes.unshift(restoreNode);
-		}
 	
 	}
 
 	size() {
-		let size = this.nodesArray.length;
-		return size;
+		return this.queueLength;
 	}
 
 	isEmpty() {
@@ -92,6 +99,7 @@ class MaxHeap {
 	clear() {
 		this.root = null;
 		this.parentNodes.length = 0;
+		this.queueLength = 0;
 	}
 
 	insertNode(node) {
@@ -99,12 +107,11 @@ class MaxHeap {
 		if (this.root == null) {
 			this.root = node;
 			this.parentNodes.push(node);
-			this.nodesArray.push(node);
-
+			
 		} else {
 			this.parentNodes[0].appendChild(node);
 			this.parentNodes.push(node);
-			this.nodesArray.push(node);
+			
 			
 		}
 		if (this.parentNodes[0].left && this.parentNodes[0].right) {
