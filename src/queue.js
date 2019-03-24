@@ -15,7 +15,12 @@ class PriorityQueue {
 	}
 
 	shift() {
-
+		if (this.heap.root) {
+			let removedRoot = this.heap.pop();
+			return removedRoot;
+		} else {
+			throw error;
+		}
 	}
 
 	size() {
