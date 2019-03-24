@@ -25,10 +25,7 @@ class MaxHeap {
 			this.queueLength--;
 			return rootNode.data;
 			
-		}
-		
-		
-		
+		}	
 	}
 
 	detachRoot() {
@@ -43,7 +40,7 @@ class MaxHeap {
 
 	restoreRootFromLastInsertedNode(detached) {
 		
-		if (this.parentNodes.length > 0) {
+		
 			let restoreNode = new Node();
 			restoreNode = this.parentNodes.pop();
 			this.root = restoreNode;
@@ -80,7 +77,7 @@ class MaxHeap {
 				restoreNode.right = null;
 				this.parentNodes.unshift(restoreNode);
 			}
-		}
+		
 		
 	
 	}
@@ -132,6 +129,9 @@ class MaxHeap {
 
 			if (indexNode >-1 && indexParent == -1) {
 				this.parentNodes[indexNode] = node.parent;
+			}
+			if(node.parent === this.root) {
+				this.root = node;
 			}
 
 			node.swapWithParent();
